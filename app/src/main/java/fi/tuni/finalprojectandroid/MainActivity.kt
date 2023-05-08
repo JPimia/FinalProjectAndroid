@@ -1,6 +1,7 @@
 package fi.tuni.finalprojectandroid
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -9,15 +10,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import fi.tuni.finalprojectandroid.ui.theme.FinalProjectAndroidTheme
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -28,63 +30,33 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.lang.reflect.Type
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
 
-
+            var showDialog by remember { mutableStateOf(false) }
             var users by remember { mutableStateOf(emptyList<User>()) }
+
+            fun showAddUserDialog() {
+                showDialog = true
+            }
+
             LaunchedEffect(key1 = Unit) {
                 val fetchedUsers = getUsers()
                 users = fetchedUsers
             }
-            UserList(users = users)
-        }
-    }
-
-}
-
-suspend fun getUsers(): List<User> = withContext(Dispatchers.IO) {
-    val client = OkHttpClient()
-    val request = Request.Builder()
-        .url("https://dummyjson.com/users")
-        .build()
-    val response = client.newCall(request).execute()
-    val responseBody = response.body?.string()
-    val gson = Gson()
-    val jsonObject = gson.fromJson(responseBody, JsonObject::class.java)
-    val jsonArray = jsonObject.getAsJsonArray("users")
-    return@withContext gson.fromJson(jsonArray, object : TypeToken<List<User>>() {}.type)
-}
-
-@Composable
-fun UserList(users: List<User>) {
-    var searchText by remember { mutableStateOf("") }
-    Column {
-        TextField(
-            value = searchText,
-            onValueChange = { searchText = it },
-            label = { Text(text = "search") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        )
-        LazyColumn {
-            items(users.filter {
-                it.firstName.contains(searchText, ignoreCase = true) ||
-                it.lastName.contains(searchText, ignoreCase = true) ||
-                it.email.contains(searchText, ignoreCase = true) ||
-                it.phone.contains(searchText, ignoreCase = true) ||
-                it.age.toString().contains(searchText, ignoreCase = true)
-            }) { user ->
-                UserItem(user = user)
+            if(showDialog) {
+                AddUserDialog(onAddUser = { user ->
+                    Toast.makeText(this, "User Added", Toast.LENGTH_SHORT).show()
+                },
+                onDismiss = {showDialog = false}
+                )
             }
+            UserList(users = users, showAddUserDialog = {showAddUserDialog()})
         }
     }
 }
-
 @Composable
 fun UserItem(user: User) {
     Column(
