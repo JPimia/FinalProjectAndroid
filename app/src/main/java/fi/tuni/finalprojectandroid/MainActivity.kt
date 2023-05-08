@@ -6,15 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +33,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+
             var users by remember { mutableStateOf(emptyList<User>()) }
             LaunchedEffect(key1 = Unit) {
                 val fetchedUsers = getUsers()
@@ -61,9 +61,26 @@ suspend fun getUsers(): List<User> = withContext(Dispatchers.IO) {
 
 @Composable
 fun UserList(users: List<User>) {
-    LazyColumn {
-        items(users) { user ->
-            UserItem(user = user)
+    var searchText by remember { mutableStateOf("") }
+    Column {
+        TextField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            label = { Text(text = "search") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
+        LazyColumn {
+            items(users.filter {
+                it.firstName.contains(searchText, ignoreCase = true) ||
+                it.lastName.contains(searchText, ignoreCase = true) ||
+                it.email.contains(searchText, ignoreCase = true) ||
+                it.phone.contains(searchText, ignoreCase = true) ||
+                it.age.toString().contains(searchText, ignoreCase = true)
+            }) { user ->
+                UserItem(user = user)
+            }
         }
     }
 }
@@ -76,27 +93,33 @@ fun UserItem(user: User) {
             .fillMaxWidth()
             .background(Color.White)
             .border(1.dp, Color.Gray)
-            .clickable { /* add something here */ }
+            .clickable { /* Handle user click */ }
     ) {
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
             "Name: ${user.firstName} ${user.lastName}",
             style = MaterialTheme.typography.h6,
-            modifier = Modifier
-                .padding(5.dp)
+            modifier = Modifier.padding(5.dp)
         )
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
             "Age: ${user.age}",
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.padding(5.dp)
         )
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
             "Email: ${user.email}",
             style = MaterialTheme.typography.body1,
-            color = Color.Gray
+            color = Color.Gray,
+            modifier = Modifier.padding(5.dp)
         )
+        Spacer(modifier = Modifier.height(5.dp))
         Text(
             "Phone: ${user.phone}",
             style = MaterialTheme.typography.body2,
-            color = Color.Gray
+            color = Color.Gray,
+            modifier = Modifier.padding(5.dp)
         )
     }
 }
