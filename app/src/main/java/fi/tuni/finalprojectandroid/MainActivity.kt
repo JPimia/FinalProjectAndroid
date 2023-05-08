@@ -3,7 +3,13 @@ package fi.tuni.finalprojectandroid
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
@@ -11,7 +17,9 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import fi.tuni.finalprojectandroid.ui.theme.FinalProjectAndroidTheme
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -55,11 +63,41 @@ suspend fun getUsers(): List<User> = withContext(Dispatchers.IO) {
 fun UserList(users: List<User>) {
     LazyColumn {
         items(users) { user ->
-            Text("First Name: ${user.firstName}")
-            Text("Last Name: ${user.lastName}")
-            Text("Email: ${user.email}")
-            Text("Phone: ${user.phone}")
+            UserItem(user = user)
         }
+    }
+}
+
+@Composable
+fun UserItem(user: User) {
+    Column(
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .background(Color.White)
+            .border(1.dp, Color.Gray)
+            .clickable { /* add something here */ }
+    ) {
+        Text(
+            "Name: ${user.firstName} ${user.lastName}",
+            style = MaterialTheme.typography.h6,
+            modifier = Modifier
+                .padding(5.dp)
+        )
+        Text(
+            "Age: ${user.age}",
+            style = MaterialTheme.typography.body1
+        )
+        Text(
+            "Email: ${user.email}",
+            style = MaterialTheme.typography.body1,
+            color = Color.Gray
+        )
+        Text(
+            "Phone: ${user.phone}",
+            style = MaterialTheme.typography.body2,
+            color = Color.Gray
+        )
     }
 }
 
