@@ -1,20 +1,26 @@
 package fi.tuni.finalprojectandroid
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.text.isDigitsOnly
 
 @Composable
-fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit) {
+fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<User>, setUsers: (List<User>) -> Unit) {
+    var context = LocalContext.current
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
-    var gender by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
 
@@ -29,6 +35,7 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit) {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
+                .background(Color.White)
         ) {
             Text(
                 text = "Add User",
@@ -55,7 +62,7 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit) {
 
             OutlinedTextField(
                 value = age,
-                onValueChange = { age = it },
+                onValueChange = { newValue -> if (newValue.all { it.isDigit() }) { age = newValue}  },
                 label = { Text("Age") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -86,7 +93,10 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
-                    onClick = {
+                    onClick = { if (firstName.isBlank() || lastName.isBlank() || age.isBlank() || email.isBlank() || phone.isBlank()) {
+                        //Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+
+                    } else {
                         val newUser = User(
                             firstName = firstName,
                             lastName = lastName,
@@ -94,8 +104,12 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit) {
                             email = email,
                             phone = phone
                         )
-                        onAddUser(newUser)
-                        onDismiss()
+                        AddUser(newUser, users, setUsers)
+                            onAddUser(newUser)
+                            onDismiss()
+
+                    }
+
                     }
                 ) {
                     Text("Add")

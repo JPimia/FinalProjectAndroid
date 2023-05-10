@@ -1,6 +1,7 @@
 package fi.tuni.finalprojectandroid
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,35 +9,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import fi.tuni.finalprojectandroid.ui.theme.FinalProjectAndroidTheme
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.lang.reflect.Type
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
 
+            var context = LocalContext.current
             var showDialog by remember { mutableStateOf(false) }
-            var users by remember { mutableStateOf(emptyList<User>()) }
+            var (users, setUsers) = remember { mutableStateOf(listOf<User>()) }
 
             fun showAddUserDialog() {
                 showDialog = true
@@ -44,19 +35,29 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(key1 = Unit) {
                 val fetchedUsers = getUsers()
-                users = fetchedUsers
+                setUsers(fetchedUsers)
             }
             if(showDialog) {
-                AddUserDialog(onAddUser = { user ->
-                    Toast.makeText(this, "User Added", Toast.LENGTH_SHORT).show()
+                AddUserDialog(
+                    onAddUser = { user ->
+                    Toast.makeText(context, "User Added", Toast.LENGTH_SHORT).show()
+                    showDialog = false
+                    print("jeeejeeejeee")
                 },
-                onDismiss = {showDialog = false}
+                onDismiss = {showDialog = false
+                            print("mororo")},
+                users, setUsers = setUsers
+
                 )
             }
             UserList(users = users, showAddUserDialog = {showAddUserDialog()})
+            print("asdasdasd")
+            Log.d("MyTag", users.toString())
+
         }
     }
 }
+
 @Composable
 fun UserItem(user: User) {
     Column(
