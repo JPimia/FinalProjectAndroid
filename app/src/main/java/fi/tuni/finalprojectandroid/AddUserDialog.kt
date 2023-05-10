@@ -94,7 +94,7 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = { if (firstName.isBlank() || lastName.isBlank() || age.isBlank() || email.isBlank() || phone.isBlank()) {
-                        //Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
 
                     } else {
                         val newUser = User(
