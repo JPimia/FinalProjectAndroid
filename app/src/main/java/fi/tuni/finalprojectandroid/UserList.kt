@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UserList(users: List<User>, showAddUserDialog: () -> Unit) {
+fun UserList(users: List<User>, showAddUserDialog: () -> Unit, setUsers: (List<User>) -> Unit) {
     var searchText by remember { mutableStateOf("") }
     Column {
         Button(onClick = { showAddUserDialog() }, modifier = Modifier
@@ -37,7 +37,7 @@ fun UserList(users: List<User>, showAddUserDialog: () -> Unit) {
                         it.phone.contains(searchText, ignoreCase = true) ||
                         it.age.toString().contains(searchText, ignoreCase = true)
             }) { user ->
-                UserItem(user = user)
+                UserItem(user = user, users = users, setUsers = setUsers)
             }
         }
     }

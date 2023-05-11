@@ -10,6 +10,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import fi.tuni.finalprojectandroid.ui.theme.FinalProjectAndroidTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 
 class MainActivity : ComponentActivity() {
@@ -50,7 +53,7 @@ class MainActivity : ComponentActivity() {
 
                 )
             }
-            UserList(users = users, showAddUserDialog = {showAddUserDialog()})
+            UserList(users = users, showAddUserDialog = {showAddUserDialog()}, setUsers = setUsers)
             print("asdasdasd")
             Log.d("MyTag", users.toString())
 
@@ -59,41 +62,50 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun UserItem(user: User) {
-    Column(
+fun UserItem(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
+    Row(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(8.dp)
             .fillMaxWidth()
             .background(Color.White)
-            .border(1.dp, Color.Gray)
-            .clickable { /* Handle user click */ }
+            .border(1.dp, Color.Gray),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            "Name: ${user.firstName} ${user.lastName}",
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.padding(5.dp)
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            "Age: ${user.age}",
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier.padding(5.dp)
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            "Email: ${user.email}",
-            style = MaterialTheme.typography.body1,
-            color = Color.Gray,
-            modifier = Modifier.padding(5.dp)
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            "Phone: ${user.phone}",
-            style = MaterialTheme.typography.body2,
-            color = Color.Gray,
-            modifier = Modifier.padding(5.dp)
-        )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(5.dp)
+        ) {
+            Text(
+                "Name: ${user.firstName} ${user.lastName}",
+                style = MaterialTheme.typography.h6,
+            )
+            Text(
+                "Age: ${user.age}",
+                style = MaterialTheme.typography.body1,
+                color = Color.Gray
+            )
+            Text(
+                "Email: ${user.email}",
+                style = MaterialTheme.typography.body1,
+                color = Color.Gray
+            )
+            Text(
+                "Phone: ${user.phone}",
+                style = MaterialTheme.typography.body2,
+                color = Color.Gray
+            )
+        }
+
+        IconButton(
+            onClick = { deleteUser(user, users = users, setUsers = setUsers) }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Delete",
+                tint = Color.Red
+            )
+        }
     }
 }
 

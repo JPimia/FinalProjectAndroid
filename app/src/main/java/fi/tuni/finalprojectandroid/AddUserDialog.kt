@@ -18,6 +18,7 @@ import androidx.core.text.isDigitsOnly
 @Composable
 fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<User>, setUsers: (List<User>) -> Unit) {
     var context = LocalContext.current
+    var id by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
@@ -98,6 +99,7 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<
 
                     } else {
                         val newUser = User(
+                            id = id,
                             firstName = firstName,
                             lastName = lastName,
                             age = age.toInt(),

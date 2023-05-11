@@ -50,13 +50,34 @@ fun AddUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
         override fun onResponse(call: Call, response: Response) {
             Log.d("MyTag", users.toString())
             val updatedUsers = users.plus(user)
+            updatedUsers.sortedBy { it.id }
             setUsers(updatedUsers)
-
-
         }
 
         override fun onFailure(call: Call, e: IOException) {
             Log.d("MyTag", "User added failed")
+        }
+    })
+}
+
+fun deleteUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
+    val url = "https://dummyjson.com/users/${user.id}"
+
+    val request = Request.Builder()
+        .url(url)
+        .delete()
+        .build()
+
+    val client = OkHttpClient()
+
+    client.newCall(request).enqueue(object : Callback {
+        override fun onResponse(call: Call, response: Response) {
+            val updatedUsers = users.minus(user)
+            updatedUsers.sortedBy { it.id }
+            setUsers(updatedUsers)
+        }
+        override fun onFailure(call: Call, e: IOException) {
+            Log.d("MyTag", "Deleting failed")
         }
     })
 }
