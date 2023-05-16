@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.text.isDigitsOnly
+import coil.compose.rememberImagePainter
 
 @Composable
 fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<User>, setUsers: (List<User>) -> Unit) {
@@ -97,28 +98,25 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<
                     onClick = { if (firstName.isBlank() || lastName.isBlank() || age.isBlank() || email.isBlank() || phone.isBlank()) {
                         Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
 
-                    } else {
-                        val newUser = User(
-                            id = id,
-                            firstName = firstName,
-                            lastName = lastName,
-                            age = age.toInt(),
-                            email = email,
-                            phone = phone
-                        )
-                        AddUser(newUser, users, setUsers)
-                            onAddUser(newUser)
-                            onDismiss()
-
-                    }
-
+                        } else {
+                            val newUser = User(
+                                id = id,
+                                firstName = firstName,
+                                lastName = lastName,
+                                age = age.toInt(),
+                                email = email,
+                                phone = phone,
+                                image = "https://robohash.org/hicveldicta.png?size=50x50&set=set1"
+                            )
+                            AddUser(newUser, users, setUsers)
+                                onAddUser(newUser)
+                                onDismiss()
+                        }
                     }
                 ) {
                     Text("Add")
                 }
-
             }
         }
     }
-
 }

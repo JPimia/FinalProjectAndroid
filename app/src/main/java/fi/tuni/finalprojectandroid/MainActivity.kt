@@ -1,14 +1,17 @@
 package fi.tuni.finalprojectandroid
 
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -21,7 +24,10 @@ import fi.tuni.finalprojectandroid.ui.theme.FinalProjectAndroidTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role.Companion.Image
+import coil.compose.rememberImagePainter
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +77,13 @@ fun UserItem(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
             .border(1.dp, Color.Gray),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Image(
+            painter = rememberImagePainter(data = user.image),
+            contentDescription = "User Image",
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+        )
         Column(
             modifier = Modifier
                 .weight(1f)
