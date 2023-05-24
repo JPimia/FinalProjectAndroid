@@ -17,7 +17,7 @@ import androidx.core.text.isDigitsOnly
 import coil.compose.rememberImagePainter
 
 @Composable
-fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<User>, setUsers: (List<User>) -> Unit) {
+fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, sortedUsers: List<User>, setUsers: (List<User>) -> Unit) {
     var context = LocalContext.current
     var id by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
@@ -85,7 +85,6 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
-
             Row(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier.fillMaxWidth()
@@ -96,7 +95,7 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = { if (firstName.isBlank() || lastName.isBlank() || age.isBlank() || email.isBlank() || phone.isBlank()) {
-                        Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Fill all fields", Toast.LENGTH_SHORT).show()
 
                         } else {
                             val newUser = User(
@@ -106,9 +105,9 @@ fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, users: List<
                                 age = age.toInt(),
                                 email = email,
                                 phone = phone,
-                                image = "https://robohash.org/hicveldicta.png?size=50x50&set=set1"
+                                image = "https://robohash.org/${firstName + lastName}"
                             )
-                            AddUser(newUser, users, setUsers)
+                            AddUser(newUser, sortedUsers, setUsers)
                                 onAddUser(newUser)
                                 onDismiss()
                         }

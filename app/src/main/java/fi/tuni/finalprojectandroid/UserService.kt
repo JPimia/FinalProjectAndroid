@@ -16,7 +16,7 @@ import java.io.IOException
 suspend fun getUsers(): List<User> = withContext(Dispatchers.IO) {
     val client = OkHttpClient()
     val request = Request.Builder()
-        .url("https://dummyjson.com/users")
+        .url("https://dummyjson.com/users?limit=100")
         .build()
     val response = client.newCall(request).execute()
     val responseBody = response.body?.string()
@@ -29,6 +29,10 @@ suspend fun getUsers(): List<User> = withContext(Dispatchers.IO) {
 fun AddUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
     val url = "https://dummyjson.com/users"
     val jsonMediaType = "application/json; charset=uft-8".toMediaTypeOrNull()
+
+    val maxId = users.map { it.id.toIntOrNull() ?: 0 }.maxOrNull() ?: 0
+
+    var newId = (maxId + 1).toString()
 
     val requestBody = """
         {
@@ -49,8 +53,9 @@ fun AddUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
     client.newCall(request).enqueue(object : Callback {
         override fun onResponse(call: Call, response: Response) {
             Log.d("MyTag", users.toString())
-            val updatedUsers = users.plus(user)
-            updatedUsers.sortedBy { it.id }
+            val updatedUsers = users.toMutableList()
+            val newUser = user.copy(id = newId)
+            updatedUsers.add(newUser)
             setUsers(updatedUsers)
         }
 
@@ -61,7 +66,7 @@ fun AddUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
 }
 
 fun deleteUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
-    val url = "https://dummyjson.com/users/${user.id}"
+    /*val url = "https://dummyjson.com/users/${user.id}"
 
     val request = Request.Builder()
         .url(url)
@@ -71,13 +76,17 @@ fun deleteUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
     val client = OkHttpClient()
 
     client.newCall(request).enqueue(object : Callback {
-        override fun onResponse(call: Call, response: Response) {
-            val updatedUsers = users.minus(user)
-            updatedUsers.sortedBy { it.id }
+        override fun onResponse(call: Call, response: Response) {*/
+            val updatedUsers = users.toMutableList()
+            updatedUsers.remove(user)
+
+            for (i in updatedUsers.indices) {
+                updatedUsers[i] = updatedUsers[i].copy(id = (i + 1).toString())
+            }
             setUsers(updatedUsers)
-        }
+        /*}
         override fun onFailure(call: Call, e: IOException) {
             Log.d("MyTag", "Deleting failed")
         }
-    })
+    })*/
 }
