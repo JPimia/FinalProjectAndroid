@@ -6,12 +6,14 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.animateIntSizeAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -28,6 +30,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
@@ -72,10 +81,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun UserItem(user: User, onEditUser: (User) -> Unit, users: List<User>, setUsers: (List<User>) -> Unit) {
+    val nameColor = Color(android.graphics.Color.parseColor("#e3d184"))
+    val surfaceColor = Color(android.graphics.Color.parseColor("#4b4b4b"))
     Surface(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(8.dp),
         elevation = 8.dp,
+        color = surfaceColor
     ) {
         Row(
             modifier = Modifier
@@ -98,6 +110,7 @@ fun UserItem(user: User, onEditUser: (User) -> Unit, users: List<User>, setUsers
                 Text(
                     "${user.firstName} ${user.lastName}",
                     style = MaterialTheme.typography.h6,
+                    color = nameColor,
                 )
                 Text(
                     "Age: ${user.age}",
@@ -159,13 +172,14 @@ fun EditUserDialog(user: User, onEditUser: (User) -> Unit, onDismiss: () -> Unit
         Surface(
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.padding(16.dp),
-            elevation = 8.dp
+            elevation = 8.dp,
+            color = Color.LightGray
         ) {
             Column(
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth()
-                    .background(Color.White)
+                    .background(Color.LightGray)
             ) {
                 Text(
                     text = "Edit User",
@@ -219,7 +233,7 @@ fun EditUserDialog(user: User, onEditUser: (User) -> Unit, onDismiss: () -> Unit
                 )
                 Row(
                     horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp)
                 ) {
                     TextButton(onClick = { onDismiss() }) {
                         Text(text = "Cancel")

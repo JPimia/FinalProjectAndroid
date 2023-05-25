@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -31,20 +28,27 @@ fun UserList(users: List<User>, showAddUserDialog: () -> Unit, setUsers: (List<U
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    Column(modifier = Modifier.background(Color.LightGray)) {
+    val mainBackground = Color(android.graphics.Color.parseColor("#242424"))
+    val surfaceColor = Color(android.graphics.Color.parseColor("#4b4b4b"))
+    val buttonColor = Color(android.graphics.Color.parseColor("#4d5e6a"))
+    val buttonTextColor = Color(android.graphics.Color.parseColor("#e3d184"))
+
+    Column(modifier = Modifier.background(mainBackground)) {
         Surface(
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier.padding(8.dp),
             elevation = 8.dp,
-            color = Color.White
+            color = surfaceColor
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
                 Button(onClick = { showAddUserDialog() },
                     modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 0.dp, start = 0.dp, end = 0.dp, bottom = 8.dp))
+                        .fillMaxWidth()
+                        .padding(top = 0.dp, start = 0.dp, end = 0.dp, bottom = 8.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor)
+                )
                 {
-                    Text("Add User")
+                    Text("Add User", color = buttonTextColor)
                 }
                 TextField(
                     value = searchText,
@@ -58,17 +62,19 @@ fun UserList(users: List<User>, showAddUserDialog: () -> Unit, setUsers: (List<U
                     Button(
                         onClick = { sortedByName = true
                             sortedByAge = false },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                     ) {
-                        Text(text = "Sort By Name")
+                        Text(text = "Sort By Name", color = buttonTextColor)
                     }
                     Spacer(Modifier.width(8.dp))
                     Button(
                         onClick = { sortedByAge = true
                             sortedByName = false },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor)
                     ) {
-                        Text(text = "Sort By Age")
+                        Text(text = "Sort By Age", color = buttonTextColor)
                     }
                 }
             }

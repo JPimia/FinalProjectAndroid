@@ -66,7 +66,7 @@ fun AddUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
 }
 
 fun deleteUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
-    /*val url = "https://dummyjson.com/users/${user.id}"
+    val url = "https://dummyjson.com/users/${user.id}"
 
     val request = Request.Builder()
         .url(url)
@@ -76,7 +76,7 @@ fun deleteUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
     val client = OkHttpClient()
 
     client.newCall(request).enqueue(object : Callback {
-        override fun onResponse(call: Call, response: Response) {*/
+        override fun onResponse(call: Call, response: Response) {
             val updatedUsers = users.toMutableList()
             updatedUsers.remove(user)
 
@@ -84,9 +84,9 @@ fun deleteUser(user: User, users: List<User>, setUsers: (List<User>) -> Unit) {
                 updatedUsers[i] = updatedUsers[i].copy(id = (i + 1).toString())
             }
             setUsers(updatedUsers)
-        /*}
+        }
         override fun onFailure(call: Call, e: IOException) {
             Log.d("MyTag", "Deleting failed")
         }
-    })*/
+    })
 }
