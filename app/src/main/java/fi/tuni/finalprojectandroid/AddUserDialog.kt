@@ -1,6 +1,5 @@
 package fi.tuni.finalprojectandroid
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,8 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.text.isDigitsOnly
-import coil.compose.rememberImagePainter
 
 @Composable
 fun AddUserDialog(onAddUser: (User) -> Unit, onDismiss: () -> Unit, sortedUsers: List<User>, setUsers: (List<User>) -> Unit) {

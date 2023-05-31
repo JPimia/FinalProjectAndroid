@@ -1,50 +1,36 @@
 package fi.tuni.finalprojectandroid
 
-import android.media.Image
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateIntSizeAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import fi.tuni.finalprojectandroid.ui.theme.FinalProjectAndroidTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.PaintingStyle.Companion.Stroke
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawOutline
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role.Companion.Image
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.rememberImagePainter
+import fi.tuni.finalprojectandroid.ui.theme.FinalProjectAndroidTheme
 
-class MainActivity : ComponentActivity() {
+/**
+ * The main activity of the Android application.
+ */
+class MainActivity() : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -53,12 +39,21 @@ class MainActivity : ComponentActivity() {
             var showDialog by remember { mutableStateOf(false) }
             var (users, setUsers) = remember { mutableStateOf(listOf<User>()) }
 
+            /**
+             * Shows the add user dialog.
+             */
             fun showAddUserDialog() {
                 showDialog = true
             }
 
+            val userPagingSource = remember {
+                UserPagingSource(pageSize = 20) { pageSize, page ->
+                    getUsers(pageSize, page)
+                }
+            }
+
             LaunchedEffect(key1 = Unit) {
-                val fetchedUsers = getUsers()
+                val fetchedUsers = getUsers(99,1)
                 val sortedUsers = fetchedUsers.sortedBy { it.id }
                 setUsers(sortedUsers)
             }
@@ -73,16 +68,30 @@ class MainActivity : ComponentActivity() {
                 )
             }
             if(!users.isNullOrEmpty()) {
-                UserList(users = users, showAddUserDialog = {showAddUserDialog()}, setUsers = setUsers)
+                UserList(
+                    userPagingSource = userPagingSource,
+                    users = users,
+                    showAddUserDialog = {showAddUserDialog()},
+                    setUsers = setUsers)
             }
         }
     }
 }
 
+/**
+ * Composable function representing a user item.
+ *
+ * @param user The user object to display.
+ * @param onEditUser Callback function for editing a user.
+ * @param users The list of users.
+ * @param setUsers Callback function for updating the list of users.
+ */
 @Composable
 fun UserItem(user: User, onEditUser: (User) -> Unit, users: List<User>, setUsers: (List<User>) -> Unit) {
+
     val nameColor = Color(android.graphics.Color.parseColor("#e3d184"))
     val surfaceColor = Color(android.graphics.Color.parseColor("#4b4b4b"))
+
     Surface(
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.padding(8.dp),
@@ -151,9 +160,16 @@ fun UserItem(user: User, onEditUser: (User) -> Unit, users: List<User>, setUsers
         }
     }
 }
+
+/**
+ * Composable function representing the edit user dialog.
+ *
+ * @param user The user object to edit.
+ * @param onEditUser Callback function for saving the edited user.
+ * @param onDismiss Callback function for dismissing the dialog.
+ */
 @Composable
 fun EditUserDialog(user: User, onEditUser: (User) -> Unit, onDismiss: () -> Unit) {
-    // Create the necessary state variables to hold the edited values
     val context = LocalContext.current
     var firstName by remember { mutableStateOf(user.firstName) }
     var lastName by remember { mutableStateOf(user.lastName) }
@@ -260,14 +276,22 @@ fun EditUserDialog(user: User, onEditUser: (User) -> Unit, onDismiss: () -> Unit
                 }
             }
         }
-
     }
 }
+
+/**
+ * Composable function representing a greeting.
+ *
+ * @param name The name to greet.
+ */
 @Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
+/**
+ * Preview function for the composable functions.
+ */
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

@@ -1,6 +1,5 @@
 package fi.tuni.finalprojectandroid
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,28 +9,60 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 
-
+/**
+ * Composable function representing the user list.
+ *
+ * @param userPagingSource The paging source for users.
+ * @param users The list of users.
+ * @param showAddUserDialog Callback function for showing the add user dialog.
+ * @param setUsers Callback function for updating the list of users.
+ */
 @Composable
-fun UserList(users: List<User>, showAddUserDialog: () -> Unit, setUsers: (List<User>) -> Unit) {
+fun UserList (userPagingSource: UserPagingSource, users: List<User>, showAddUserDialog: () -> Unit, setUsers: (List<User>) -> Unit) {
     var searchText by remember { mutableStateOf("") }
     var sortedByName by remember { mutableStateOf(true) }
     var sortedByAge by remember { mutableStateOf(false) }
     var selectedUser by remember { mutableStateOf<User?>(null) }
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
+    //val focusRequester = remember { FocusRequester() }
+    //val focusManager = LocalFocusManager.current
 
     val mainBackground = Color(android.graphics.Color.parseColor("#242424"))
     val surfaceColor = Color(android.graphics.Color.parseColor("#4b4b4b"))
     val buttonColor = Color(android.graphics.Color.parseColor("#4d5e6a"))
     val buttonTextColor = Color(android.graphics.Color.parseColor("#e3d184"))
+
+    // PAGING
+    /*val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    val pageSize = 20
+    val loadSize = remember { mutableStateOf(pageSize) }
+    val currentPage = remember { mutableStateOf(1) }
+    val isLoading = remember { mutableStateOf(false) }
+    val users = remember { mutableStateListOf<User>() }
+
+    LaunchedEffect(currentPage.value) {
+        val newUsers = userPagingSource.getUsers(pageSize, currentPage.value)
+        users.addAll(newUsers)
+        isLoading.value = false
+    }
+
+    val loadMore = {
+        if (!isLoading.value) {
+            isLoading.value = true
+            currentPage.value++
+            scope.launch {
+                val newUsers = userPagingSource.getUsers(pageSize, currentPage.value)
+                users.addAll(newUsers)
+                isLoading.value = false
+            }
+        }
+    }*/
+
 
     Column(modifier = Modifier.background(mainBackground)) {
         Surface(
@@ -127,6 +158,7 @@ fun UserList(users: List<User>, showAddUserDialog: () -> Unit, setUsers: (List<U
                 onDismiss = { selectedUser = null }
             )
         }
+
     }
 }
 
