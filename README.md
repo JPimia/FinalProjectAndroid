@@ -12,7 +12,11 @@ This is an Android project that demonstrates a user management application. It a
 
 ## Screenshots
 
-_![img.png](img.png) ![img_1.png](img_1.png) ![img_2.png](img_2.png)_
+<div style="display:flex; flex-wrap: wrap; justify-content: center;">
+  <img src="img.png" alt="Screenshot 1" width="200" />
+  <img src="img_1.png" alt="Screenshot 2" width="200" />
+  <img src="img_2.png" alt="Screenshot 3" width="200" />
+</div>
 
 ## Libraries and Technologies Used
 
