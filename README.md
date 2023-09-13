@@ -39,5 +39,3 @@ This is an Android project that demonstrates a user management application. It a
 - Tap on a red "Trash Can" to delete that user.
 - Search for users by name or age using the search bar.
 - Sort the users by name or age using the provided buttons.
-
-Screencast: https://www.youtube.com/watch?v=XuZDLinCUn0
